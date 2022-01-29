@@ -162,7 +162,6 @@ The response should look like this:
     "discountCost": 1.10,
     "totalCost": 2.20
 }
-]
 ```
 
 ## Additional Notes:
