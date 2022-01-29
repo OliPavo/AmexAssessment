@@ -1,4 +1,5 @@
 package com.amex.OrdersService.api;
+import com.amex.OrdersService.exception.DuplicateLineItemException;
 import com.amex.OrdersService.exception.ExceptionResponse;
 import com.amex.OrdersService.exception.InvalidQuantityException;
 import com.amex.OrdersService.exception.ItemNotFoundException;
@@ -32,6 +33,13 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         
      @ExceptionHandler(InvalidQuantityException.class)
      public final ResponseEntity<ExceptionResponse> handleInvalidQuantityException(InvalidQuantityException ex, WebRequest request) {
+         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                 request.getDescription(false));
+         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+     
+     @ExceptionHandler(DuplicateLineItemException.class)
+     public final ResponseEntity<ExceptionResponse> handleDuplicateLineItemException(DuplicateLineItemException ex, WebRequest request) {
          ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                  request.getDescription(false));
          return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
