@@ -3,9 +3,11 @@ package com.amex.OrdersService.infra;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 
+@Embeddable
 public class Item {
 	@NotEmpty(message = "Must provide item name!")
 	private String itemName;

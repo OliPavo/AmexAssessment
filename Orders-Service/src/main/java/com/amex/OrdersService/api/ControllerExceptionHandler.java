@@ -3,6 +3,8 @@ import com.amex.OrdersService.exception.DuplicateLineItemException;
 import com.amex.OrdersService.exception.ExceptionResponse;
 import com.amex.OrdersService.exception.InvalidQuantityException;
 import com.amex.OrdersService.exception.ItemNotFoundException;
+import com.amex.OrdersService.exception.OrderNotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,6 +28,13 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ItemNotFoundException.class)
     public final ResponseEntity<ExceptionResponse> handleItemNotFoundException(ItemNotFoundException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(OrderNotFoundException.class)
+    public final ResponseEntity<ExceptionResponse> handleOrderNotFoundException(OrderNotFoundException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);

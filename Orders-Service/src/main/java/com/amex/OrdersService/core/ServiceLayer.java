@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amex.OrdersService.exception.DuplicateLineItemException;
@@ -13,9 +15,32 @@ import com.amex.OrdersService.exception.ItemNotFoundException;
 import com.amex.OrdersService.infra.Order;
 import com.amex.OrdersService.infra.Item;
 import com.amex.OrdersService.infra.Summary;
+import com.amex.OrdersService.infra.jpa.OrderJpaRepo;
 
 @Service
 public class ServiceLayer {
+	
+	@Autowired
+    OrderJpaRepo orderRepo;
+	
+	/**
+	* Finds past order in the database when given order id.
+	*
+	* @param  orderId  Order id that will be used to query database for past order.
+	* @return  Returns order object with matching order id.
+	*/
+	public Order getOrder(int orderId){
+		return orderRepo.findByOrderId(orderId);
+	}
+	
+	/**
+	* Gets are orders stored in the database
+	*
+	* @return  Return a list of all orders found in database.
+	*/
+	public List<Order> getAllOrders(){
+		return orderRepo.findAll();
+	}
 	
 	/**
 	* Processes Order by validating items and returns order summary after calculating total cost.
@@ -56,13 +81,16 @@ public class ServiceLayer {
 					.multiply(BigDecimal.valueOf(item.getItemQuantity()))).setScale(2,RoundingMode.HALF_UP);
 		}		
 		
+		order.setDiscountCost(calculateDiscountTotal(itemCounts));
 		order.setTotalCost(subTotalCost.subtract(calculateDiscountTotal(itemCounts)));	
 		
 		summary.setOrder(order);
 		message.append(MessageFormat.format("Total cost of the order: ${0} Total discount applied: ${1}", 
-								order.getTotalCost().toString(), calculateDiscountTotal(itemCounts).toString()));
+								order.getTotalCost().toString(), order.getDiscountCost().toString()));
 		
 		summary.setMessage(message.toString());
+		
+		orderRepo.save(order);
 			
 		return summary;
 	}
