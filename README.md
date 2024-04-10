@@ -22,7 +22,7 @@ Build a service that’s able to receive simple orders of shopping goods via a R
 
 ## Installation
 
-Use any Java IDE to open the Both the 'eureka-service-registry' project and 'Orders-Service' project.
+Use any Java IDE to open both the 'eureka-service-registry' project and 'Orders-Service' project.
 
 Make sure to right click each of the projects from within your IDE and select 'Maven > Update Project' in order to properly install dependencies.
 
